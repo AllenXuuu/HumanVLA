@@ -1,0 +1,13 @@
+__pycache__
+*.pyc
+.vscode
+
+jupyter
+notebook
+logs 
+docker
+*.pth
+
+data/assets
+data/HITR_tasks
+data/motions

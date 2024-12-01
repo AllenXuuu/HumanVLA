@@ -1,0 +1,14 @@
+torch==2.1.0
+torchvision==0.16.0
+trimesh
+easydict
+tqdm
+tensorboardx 
+pyyaml==6.0.1 
+smplx
+opencv-python==4.8.1.78
+open3d
+jupyter
+notebook
+scikit-image==0.21.0
+pyglet==1.5.28

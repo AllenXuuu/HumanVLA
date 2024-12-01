@@ -1,0 +1,138 @@
+model : AMP
+num_game : 10
+horizon_length: 32
+rand_action_prob : 'stochastic'
+max_epoch : 50000
+action_clip : 1
+obs_clip : 5.
+num_iters : 8
+
+amp_buffer_size : 400000
+amp_fetch_demo_bz : 512 
+amp_replay_keep_prob : 0.03
+amp_replay_rate : 1
+
+ppo_epoch : 4
+gamma : 0.98
+tau : 0.95
+epsilon_clip : 0.2
+
+truncate_grads : False
+grad_norm : 5.0
+
+save_epoch : 500
+use_tqdm : False
+
+auto_mixed_precision : True
+normalize_adv : True
+reward:
+  disc : 1.
+  task : 1.
+  disc_thresh_min : 0.4
+  
+lr_scheduler:
+  name : constant
+
+optimizer:
+  name : Adam
+  base_lr : 5e-5
+  weight_decay : 0.
+  betas : [0.9,0.999]
+  eps : 1e-8
+
+loss:
+  actor     : 1.
+  critic    : 5.
+  entropy   : 0.
+  bound_mu  : 10.
+  disc      : 5.
+  disc_pred : 1.
+  disc_logit: 0.01
+  disc_grad : 5.
+  disc_wd   : 0.0001
+
+network:
+  bps_pre :
+    hidden : [512, 512, 128]
+  actor :
+    hidden : [1024,1024,512,28]
+  critic :
+    hidden : [1024,1024,512,1]
+  disc :
+    hidden : [1024,1024,512,1]
+  sigma:
+    init: -2.9
+
+  normalize_prop      : True
+  normalize_bps       : True
+  normalize_value     : True
+  normalize_amp       : True
+
+env:
+  name : 'HITRRearrangementEnv'
+  eval_success_thresh : 0.2
+  consecutive_success_thresh : 20
+  num_envs : 16384
+
+  num_pcd : 50
+  num_bps : 200
+
+  num_action : 28
+  max_episode_length: 300
+
+  guide_proceed_dist : 0.5
+
+  num_ref_obs_frames: 10
+  num_ref_obs_per_frame : 131
+  
+  carry_height : 0.1
+  fall_thresh : 0.15
+  enable_early_termination : True
+  
+  task_json : 'data/HITR_tasks/HITR_train.json'
+  # task_json : 'data/HITR_tasks/HITR_test.json'
+  motion : './data/motions/motion.yaml'
+
+  amp_body_name : ['left_hand', 'right_hand', 'left_foot', 'right_foot', 'head']
+  ignore_contact_name : ['left_foot', 'right_foot', 'left_hand', 'right_hand', 'right_lower_arm', 'left_lower_arm']
+
+  object:
+    asset_root : './data/assets'
+  actor:
+    asset_root : './data/humanoid_assets'
+    asset_file : 'amp_humanoid.xml'
+      
+  camera:
+    pos: [-6,  -6,  3]
+    tgt: [0.5,0.5,0]
+
+  spacing : 5
+  control_freq_inv : 2
+
+  plane:
+    staticFriction: 1.0
+    dynamicFriction: 1.0
+    restitution: 0.0
+
+  physics_engine: physx
+  sim:
+    up_axis : 'z'
+    dt : 0.0166666      # 60Hz
+    substeps: 2
+    num_client_threads : 0
+    use_gpu_pipeline : True
+    physx:
+      use_gpu : True
+      num_threads: 4
+      solver_type: 1  # 0: pgs, 1: tgs
+      num_position_iterations: 4
+      num_velocity_iterations: 0
+      contact_offset: 0.02
+      rest_offset: 0.0
+      bounce_threshold_velocity: 0.2
+      max_depenetration_velocity: 10.0
+      default_buffer_size_multiplier: 10.0
+      num_subscenes : 0
+    flex:
+      num_inner_iterations: 10
+      warm_start: 0.25

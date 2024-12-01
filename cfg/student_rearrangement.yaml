@@ -1,0 +1,146 @@
+model : Dagger
+num_game : 2
+
+beta : 0.998
+num_step_iters : 1
+num_train_iters : 5
+buffer_size : 100000
+active_rendering_weight : 0.2
+
+max_epoch : 50000
+action_clip : 1
+obs_clip : 5.
+bz : 600
+test_bz : 200
+
+report_epoch : 20
+save_epoch : 500
+use_tqdm : False
+
+truncate_grads : False
+grad_norm : 5.0
+
+auto_mixed_precision : True
+normalize_adv : True
+lr_scheduler:
+  name : constant
+
+optimizer:
+  name : Adam
+  base_lr : 5e-4
+  weight_decay : 0.
+  betas : [0.9,0.999]
+  eps : 1e-8
+
+loss:
+  actor     : 1.
+  critic    : 5.
+  entropy   : 0.
+  bound_mu  : 10.
+  disc      : 5.
+  disc_pred : 1.
+  disc_logit: 0.01
+  disc_grad : 5.
+  disc_wd   : 0.0001
+
+teacher_ckpt : './weights/humanvla_teacher.pth'
+teacher_network:
+  bps_pre :
+    hidden : [512, 512, 128]
+  actor :
+    hidden : [1024,1024,512,28]
+  critic :
+    hidden : [1024,1024,512,1]
+  disc :
+    hidden : [1024,1024,512,1]
+  sigma:
+    init: -2.9
+  normalize_prop      : True
+  normalize_bps       : True
+  normalize_value     : True
+  normalize_amp       : True
+
+student_network:
+  image_pre :
+    hidden : [128]
+  text_pre :
+    hidden : [512, 128]
+  normalize_prop : True
+
+env:
+  name : 'HITRRearrangementVLAEnv'
+  eval_success_thresh : 0.4
+  consecutive_success_thresh : 20
+
+  num_envs : 580
+
+  num_pcd : 50
+  num_bps : 200
+
+  num_action : 28
+  max_episode_length: 300
+
+  guide_proceed_dist : 0.5
+
+  num_ref_obs_frames: 10
+  num_ref_obs_per_frame : 131
+  
+  carry_height : 0.1
+  fall_thresh : 0.15
+  enable_early_termination : True
+  
+  task_json : 'data/HITR_tasks/HITR_train.json'
+  # task_json : 'data/HITR_tasks/HITR_test.json'
+  motion : './data/motions/motion.yaml'
+
+  amp_body_name : ['left_hand', 'right_hand', 'left_foot', 'right_foot', 'head']
+  ignore_contact_name : ['left_foot', 'right_foot', 'left_hand', 'right_hand', 'right_lower_arm', 'left_lower_arm']
+
+  enable_camera : True
+  enable_camera_tensor : True
+  horizontal_fov  : 90
+  camera_height   : 256
+  camera_width    : 256
+  camera_pos      : [0.103, 0, 0.175]
+  camera_rot      : [0,0,0,1]
+
+  object:
+    asset_root : './data/assets'
+  actor:
+    asset_root : './data/humanoid_assets'
+    asset_file : 'amp_humanoid.xml'
+      
+  camera:
+    pos: [-6,  -6,  3]
+    tgt: [0.5,0.5,0]
+
+  spacing : 5
+  control_freq_inv : 2
+
+  plane:
+    staticFriction: 1.0
+    dynamicFriction: 1.0
+    restitution: 0.0
+
+  physics_engine: physx
+  sim:
+    up_axis : 'z'
+    dt : 0.0166666      # 60Hz
+    substeps: 2
+    num_client_threads : 0
+    use_gpu_pipeline : True
+    physx:
+      use_gpu : True
+      num_threads: 4
+      solver_type: 1  # 0: pgs, 1: tgs
+      num_position_iterations: 4
+      num_velocity_iterations: 0
+      contact_offset: 0.02
+      rest_offset: 0.0
+      bounce_threshold_velocity: 0.2
+      max_depenetration_velocity: 10.0
+      default_buffer_size_multiplier: 10.0
+      num_subscenes : 0
+    flex:
+      num_inner_iterations: 10
+      warm_start: 0.25
