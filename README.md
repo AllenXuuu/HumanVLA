@@ -95,6 +95,7 @@ We appreciate the efforts of following open-sourced works: [ASE](https://github.
 
 ## Citation
 If you find our work useful, please cite:
+```
 @misc{xu2024humanvla,
       title={HumanVLA: Towards Vision-Language Directed Object Rearrangement by Physical Humanoid}, 
       author={Xinyu Xu and Yizheng Zhang and Yong-Lu Li and Lei Han and Cewu Lu},
@@ -104,3 +105,4 @@ If you find our work useful, please cite:
       primaryClass={cs.RO},
       url={https://arxiv.org/abs/2406.19972}, 
 }
+```
